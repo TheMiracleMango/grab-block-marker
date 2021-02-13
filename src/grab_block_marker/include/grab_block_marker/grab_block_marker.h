@@ -26,9 +26,9 @@ void publish();
 
 private:
 struct State {
-	geometry_msgs::TransformStamped pose;
-	geometry_msgs::TransformStamped grab_pose;
-	grab_block_marker::holding holding_state;
+  geometry_msgs::TransformStamped pose;
+  geometry_msgs::TransformStamped grab_pose;
+  grab_block_marker::holding holding_state;
 };
 
 void init(const std::vector<std::string> &block_names);
