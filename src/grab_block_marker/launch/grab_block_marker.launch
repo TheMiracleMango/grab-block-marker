@@ -1,0 +1,10 @@
+<launch>
+  <arg name="marker_name" default="marker"/>
+  <arg name="block_names" default="[]"/>
+
+  <node name="grab_block_marker" pkg="grab_block_marker" type="grab_block_marker_node" output="screen">
+    <param name="marker_name" type="string" value="$(arg marker_name)"/>
+    <rosparam file="$(find grab_block_marker)/config/config.yaml"/>
+    <rosparam param="block_names" subst_value="True">$(arg block_names)</rosparam>
+  </node>
+</launch>

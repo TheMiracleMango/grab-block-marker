@@ -1,0 +1,24 @@
+<launch>
+  <arg name="marker_name" value="marker"/>
+  <arg name="block_names" value="[block_1, block_2]"/>
+
+  <include file="$(find grab_block_marker)/launch/grab_block_marker.launch">
+    <arg name="marker_name" value="$(arg marker_name)"/>
+    <arg name="block_names" value="$(arg block_names)"/>
+  </include>
+
+  <include file="$(find gazebo_ros)/launch/empty_world.launch">
+    <arg name="world_name" value="$(find grab_block_marker_gazebo)/worlds/grab_block_marker.world"/>
+    <arg name="paused" value="true"/>
+  </include>
+
+  <param name="block_description" command="$(find xacro)/xacro $(find block_description)/models/block.xacro"/>
+  <param name="marker_description" command="$(find xacro)/xacro $(find marker_description)/models/marker.xacro"/>
+
+  <node name="spawn_block_1" pkg="gazebo_ros" type="spawn_model" args="-param block_description -urdf -x 1 -z 2 -model block_1"/>
+  <node name="spawn_block_2" pkg="gazebo_ros" type="spawn_model" args="-param block_description -urdf -x -1 -z 2 -model block_2"/>
+
+  <node name="spawn_marker" pkg="gazebo_ros" type="spawn_model" args="-param marker_description -urdf -model $(arg marker_name)"/>
+
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(find grab_block_marker_gazebo)/rviz/default.rviz" required="true"/>
+</launch>
