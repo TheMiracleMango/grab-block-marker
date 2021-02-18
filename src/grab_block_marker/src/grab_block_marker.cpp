@@ -175,14 +175,24 @@ void GrabBlockMarker::initMarker() {
 
 std::string GrabBlockMarker::getNearestBlock() {
   std::string nearest_block;
+
+  // Get transform from grab to world
+  geometry_msgs::TransformStamped grab_transform;
+  try {
+    grab_transform = tfb_.lookupTransform("world", "grab", ros::Time(0));
+  } catch (tf2::TransformException &ex) {
+    ROS_WARN("%s",ex.what());
+    return nearest_block;
+  }
+
   double nearest_distance = std::numeric_limits<double>::max();
 
   // Find the Gazebo block model that is closest to the interactive marker
   // Return empty string if the nearest block is not within the grab distance
   for(const auto &block : blocks_) {
-    double x = state_.pose.transform.translation.x - block.second.transform.translation.x;
-    double y = state_.pose.transform.translation.y - block.second.transform.translation.y;
-    double z = state_.pose.transform.translation.z - block.second.transform.translation.z;
+    double x = grab_transform.transform.translation.x - block.second.transform.translation.x;
+    double y = grab_transform.transform.translation.y - block.second.transform.translation.y;
+    double z = grab_transform.transform.translation.z - block.second.transform.translation.z;
     double distance = std::sqrt(x * x + y * y + z * z);
     if(distance <= maximum_grab_distance_ && distance < nearest_distance) {
       nearest_distance = distance;
